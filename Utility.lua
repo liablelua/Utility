@@ -1,4 +1,4 @@
--- Utility.lua (OffBrandsZickoi - Roblox, therealautoimi - Discord)
+-- Utility.lua (OffBrandsZickoi - Roblox, _xpluv - Discord)
 
 print([[
 
@@ -35,7 +35,7 @@ end
 
 -- Don't mind "time" it's used for logging certain things and whatnot.
 
-UnloadUtility() -- Uncomment if your testing Utility Source
+--UnloadUtility() -- Uncomment if your testing Utility Source
 
 if _G.UtilityLoaded ~= nil then
     if typeof(_G.UtilityLoaded) == "boolean" then
@@ -117,15 +117,11 @@ else
     
     prompt = function(text, cancel, accept, cfunc, afunc)
         loadstring(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/prompt.lua"))()
-        plr.PlayerGui:WaitForChild("Prompt")
+        wait(0.2)
         local Prompt = plr.PlayerGui.prompt
-        Prompt:WaitForChild("Frame")
         local Frame = Prompt.Frame
-        Frame:WaitForChild("TextLabel2")
         Frame.TextLabel2.Text = text
-        Frame:WaitForChild("TextButton")
         Frame.TextButton.Text = cancel
-        Frame:WaitForChild("TextButton2")
         Frame.TextButton2.Text = accept
         Frame.TextButton.MouseButton1Down:Connect(function()
             Prompt:Destroy()
@@ -139,20 +135,12 @@ else
     
     notification = function(text,time)
         loadstring(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/notification.lua"))()
-        plr.PlayerGui:WaitForChild("notif")
+        wait(0.2)
         local Notif = plr.PlayerGui.notif
-        Notif:WaitForChild("Frame2")
         local Frame = Notif.Frame2
-        Frame:WaitForChild("TextLabel2")
         Frame.TextLabel2.Text = text
         wait(time)
         Notif:Destroy()
-    end
-
-    logs = function()
-        for i = 1, #_G.UtilityStorage do
-            print(_G.UtilityStorage[i])
-        end
     end
     
     test = function()
@@ -163,7 +151,6 @@ else
         if key ~= nil then print("✅ key function") else print("❎ key function") end
         if prompt ~= nil then print("✅ prompt function") else print("❎ prompt function") end
         if notification ~= nil then print("✅ notification function") else print("❎ notification function") end
-        if logs ~= nil then print("✅ logs function") else print("❎ logs function") end
         table.insert(_G.UtilityStorage, time()..": Finished compatibility test.")
     end
     
