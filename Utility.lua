@@ -37,6 +37,13 @@ end
 
 --UnloadUtility() -- Uncomment if your testing Utility Source
 
+local v = "unstable-c4ca4238a0b923820dcc509a6f75849b"
+local update = string.gsub(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/version_update.txt"), "^%s*(.-)%s*$", "%1")
+
+if update ~= v then
+    warn("⚠️ Important changes could of been made to Utility, update ASAP!!")
+end
+
 if _G.UtilityLoaded ~= nil then
     if typeof(_G.UtilityLoaded) == "boolean" then
         if _G.UtilityLoaded then
