@@ -1,7 +1,6 @@
 local prompt = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
-local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 local Frame_2 = Instance.new("Frame")
 local TextLabel = Instance.new("TextLabel")
 local TextLabel2 = Instance.new("TextLabel")
@@ -9,6 +8,7 @@ local TextButton = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
 local TextButton2 = Instance.new("TextButton")
 local UICorner_3 = Instance.new("UICorner")
+local UISizeConstraint = Instance.new("UISizeConstraint")
 
 prompt.Name = "prompt"
 prompt.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
@@ -24,9 +24,6 @@ Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 Frame.Size = UDim2.new(0.300000012, 0, 0.300000012, 0)
 
 UICorner.Parent = Frame
-
-UIAspectRatioConstraint.Parent = Frame
-UIAspectRatioConstraint.AspectRatio = 2
 
 Frame_2.Parent = Frame
 Frame_2.BackgroundColor3 = Color3.new(0.513726, 0.513726, 0.513726)
@@ -93,3 +90,7 @@ TextButton2.TextColor3 = Color3.new(1, 1, 1)
 TextButton2.TextSize = 14
 
 UICorner_3.Parent = TextButton2
+
+UISizeConstraint.Parent = Frame
+UISizeConstraint.MaxSize = Vector2.new(350, 175)
+UISizeConstraint.MinSize = Vector2.new(350, 175)
