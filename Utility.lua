@@ -142,6 +142,12 @@ else
         wait(time)
         Notif:Destroy()
     end
+
+    logs = function()
+        for i = 1, #_G.UtilityStorage do
+            print(_G.UtilityStorage[i])
+        end
+    end
     
     test = function()
         table.insert(_G.UtilityStorage, time()..": Started compatibility test.")
@@ -151,6 +157,7 @@ else
         if key ~= nil then print("✅ key function") else print("❎ key function") end
         if prompt ~= nil then print("✅ prompt function") else print("❎ prompt function") end
         if notification ~= nil then print("✅ notification function") else print("❎ notification function") end
+        if logs ~= nil then print("✅ logs function") else print("❎ logs function") end
         table.insert(_G.UtilityStorage, time()..": Finished compatibility test.")
     end
     
