@@ -13,9 +13,14 @@ print([[
 UnloadUtility = function()
     _G.UtilityLoaded = nil
     _G.UtilityStorage = nil
+    _G.Hooks = nil
     time = nil
     hook = nil
+    unhook = nil
     remotescan = nil
+    key = nil
+    prompt = nil
+    notification = nil
     test = nil
 end
 
@@ -131,6 +136,8 @@ else
         if unhook ~= nil then print("✅ unhook function") else print("❎ unhook function") end
         if remotescan ~= nil then print("✅ remotescan function") else print("❎ remotescan function") end
         if key ~= nil then print("✅ key function") else print("❎ key function") end
+        if prompt ~= nil then print("✅ prompt function") else print("❎ prompt function") end
+        if notification ~= nil then print("✅ notification function") else print("❎ notification function") end
         table.insert(_G.UtilityStorage, time()..": Finished compatibility test.")
     end
     
