@@ -159,6 +159,17 @@ else
         local HeadShot = game:GetService("Players"):GetUserThumbnailAsync(id,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420)
         return HeadShot
     end
+
+    logs = function(ret)
+        if ret ~= nil then
+            if ret then
+                return _G.UtilityStorage
+            end
+        end
+        for i = 1, #_G.UtilityStorage do
+            print(_G.UtilityStorage[i])
+        end
+    end
     
     test = function()
         table.insert(_G.UtilityStorage, time()..": Started compatibility test.")
@@ -169,6 +180,7 @@ else
         if prompt ~= nil then print("✅ prompt function") else print("❎ prompt function") end
         if notification ~= nil then print("✅ notification function") else print("❎ notification function") end
         if headshot ~= nil then print("✅ headshot function") else print("❎ headshot function") end
+        if logs ~= nil then print("✅ logs function") else print("❎ logs function") end
         table.insert(_G.UtilityStorage, time()..": Finished compatibility test.")
     end
     
