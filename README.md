@@ -56,8 +56,14 @@ yeah i added prompts thats pretty cool
 notification("thanks for using my script",5)
 ```
 will show "thanks for using my script" for 5 seconds.
+## headshot
+```lua
+local HeadShot = headshot(game.Players.LocalPlayer)
+print(HeadShot)
+```
+great for using for images like your own ui library, etc.
 ### Other not important functions
-time() -- Get Current Time<br>test() -- Like a UNC test, but your checking if your functions are up-to-date, only checks the BIG functions not the "not important" functions.<br>UnloadUtility() -- unload for testing (should only be used in Dev environments)
+time() -- Get Current Time<br>test() -- Like a UNC test, but your checking if your functions are up-to-date, only checks the BIG functions not the "not important" functions.<br>UnloadUtility() -- unload for testing (should only be used in Dev environments)<br>uload(x)() -- loadfile temporary until celery fixes
 ### Logs and allat
 Utility has LOG SUPPORT 🎉<br>
 Logs are automatically enabled, go ahead check them:
@@ -72,3 +78,7 @@ check remotes, etc. make sure no errors in console from your functions. else con
 discord @ _xpluv
 # Can I use Source.
 Yes, just don't distribute it. Or I will personally obfuscate this script and block you from using it.
+# Examples
+yeah i added examples!!<br>
+Remote Viewer: https://github.com/liablelua/Utility/blob/main/remote_viewer.lua [Uses hook, unhook, prompt, notification!!!]<br>
+HeadShot Image Test: https://github.com/liablelua/Utility/blob/main/headshot.lua [420 by 420 image headshot.]
