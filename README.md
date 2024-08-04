@@ -72,6 +72,15 @@ for i = 1, #_G.UtilityStorage do
     print(_G.UtilityStorage[i])
 end
 ```
+DONT USE THAT NOW USE
+```lua
+logs()
+```
+to get the logs table
+```lua
+local Logs = logs(true)
+print(Logs)
+```
 # Troubleshooting
 check remotes, etc. make sure no errors in console from your functions. else contact _xpluv
 ## other concerns
