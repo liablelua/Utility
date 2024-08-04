@@ -14,6 +14,7 @@ UnloadUtility = function()
     _G.UtilityLoaded = nil
     _G.UtilityStorage = nil
     _G.Hooks = nil
+    _G.Remotes = {}
     time = nil
     hook = nil
     unhook = nil
@@ -50,6 +51,7 @@ else
     _G.UtilityLoaded = false
     _G.UtilityStorage = {}
     _G.Hooks = {}
+    _G.Remotes = {}
     plr = game.Players.LocalPlayer
     
     table.insert(_G.UtilityStorage, time()..": Utility started.")
@@ -92,8 +94,19 @@ else
         end
     end
     
+    scanall = function(f)
+        -- specifically for my remote spy (when hookfunction get added) but will do with my hook method for local remotes
+        -- DONT USE IN PRODUCTION
+        for i, v in pairs(f:GetChildren()) do
+            if v:IsA("Folder") then
+                scanall(v)
+            elseif v:IsA("RemoteEvent") then
+                table.insert(_G.Remotes, v)
+            end
+        end
+    end
+    
     key = function(keyInput, keyWeb)
-        warn("⚠️ YOUR SCRIPT SHOULD BE OBFUSCATED IF YOU USE THIS ⚠️")
         local theKey = string.gsub(game:HttpGet(keyWeb), "^%s*(.-)%s*$", "%1")
         if theKey == keyInput then
             return true
