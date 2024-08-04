@@ -150,6 +150,16 @@ else
         Notif:Destroy()
     end
     
+    uload =  function(x)
+        -- custom load file, celery's is broken atm
+        return loadstring(readfile(x))
+    end
+    
+    headshot = function(id) 
+        local HeadShot = game:GetService("Players"):GetUserThumbnailAsync(id,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420)
+        return HeadShot
+    end
+    
     test = function()
         table.insert(_G.UtilityStorage, time()..": Started compatibility test.")
         if hook ~= nil then print("✅ hook function") else print("❎ hook function") end
@@ -158,6 +168,7 @@ else
         if key ~= nil then print("✅ key function") else print("❎ key function") end
         if prompt ~= nil then print("✅ prompt function") else print("❎ prompt function") end
         if notification ~= nil then print("✅ notification function") else print("❎ notification function") end
+        if headshot ~= nil then print("✅ headshot function") else print("❎ headshot function") end
         table.insert(_G.UtilityStorage, time()..": Finished compatibility test.")
     end
     
