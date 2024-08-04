@@ -117,11 +117,15 @@ else
     
     prompt = function(text, cancel, accept, cfunc, afunc)
         loadstring(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/prompt.lua"))()
-        wait(0.2)
+        plr.PlayerGui:WaitForChild("Prompt")
         local Prompt = plr.PlayerGui.prompt
+        Prompt:WaitForChild("Frame")
         local Frame = Prompt.Frame
+        Frame:WaitForChild("TextLabel2")
         Frame.TextLabel2.Text = text
+        Frame:WaitForChild("TextButton")
         Frame.TextButton.Text = cancel
+        Frame:WaitForChild("TextButton2")
         Frame.TextButton2.Text = accept
         Frame.TextButton.MouseButton1Down:Connect(function()
             Prompt:Destroy()
@@ -135,9 +139,11 @@ else
     
     notification = function(text,time)
         loadstring(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/notification.lua"))()
-        wait(0.2)
+        plr.PlayerGui:WaitForChild("notif")
         local Notif = plr.PlayerGui.notif
+        Notif:WaitForChild("Frame2")
         local Frame = Notif.Frame2
+        Frame:WaitForChild("TextLabel2")
         Frame.TextLabel2.Text = text
         wait(time)
         Notif:Destroy()
