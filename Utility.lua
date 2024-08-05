@@ -2,15 +2,16 @@
 
 print([[
 
-    Utility Unstable (No Set Version, Use At Risk.)
+    Utility Stable v1.0
     contact _xpluv if any bugs
     
     Contributors:
     Trax (traxxy123)
+    RazAPIx64.dll (razzoni)
     
 ]])
 
-UnloadUtility = function()
+NukeUtility = function()
     _G.UtilityLoaded = nil
     _G.UtilityStorage = nil
     _G.Hooks = nil
@@ -22,6 +23,9 @@ UnloadUtility = function()
     key = nil
     prompt = nil
     notification = nil
+    uload = nil
+    headshot = nil
+    logs = nil
     test = nil
 end
 
@@ -35,7 +39,7 @@ end
 
 -- Don't mind "time" it's used for logging certain things and whatnot.
 
---UnloadUtility() -- Uncomment if your testing Utility Source
+--NukeUtility() -- Uncomment if your testing Utility Source
 
 local v = "unstable-c4ca4238a0b923820dcc509a6f75849b"
 local update = string.gsub(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/version_update.txt"), "^%s*(.-)%s*$", "%1")
@@ -55,6 +59,7 @@ if _G.UtilityLoaded ~= nil then
         error("Utility failed to load the first time, perhaps restart Roblox?")
     end
 else
+    local AntiTamper = {}
     _G.UtilityLoaded = false
     _G.UtilityStorage = {}
     _G.Hooks = {}
@@ -149,6 +154,26 @@ else
         wait(time)
         Notif:Destroy()
     end
+
+    registerTampers = function(variables)
+        for i, v in pairs(variables) do
+            AntiTamper[i] = v
+        end
+    end
+
+    updateTamper = function(var,upd)
+        AntiTamper[var] = upd
+    end
+
+    checkTamper = function(vars)
+        local Tampered = false
+        for i, v in pairs(vars) do
+            if not (AntiTamper[i] == v and v == vars[i]) then
+                Tampered = true
+            end
+        end
+        return Tampered
+    end
     
     uload =  function(x)
         -- custom load file, celery's is broken atm
@@ -170,6 +195,23 @@ else
             print(_G.UtilityStorage[i])
         end
     end
+
+    antiskid = function(scOwner,scValue)
+        warn("⚠️ This Script is Protected by Utility's Anti-Skid ⚠️")
+        if scValue == scOwner then
+            print("✅ Thank's for making a script with Utility! ✅")
+        else
+            warn("❎ SKID ALERT! ❎")
+            warn("❎ NUKING YOUR FUNCTIONS RETARD ❎")
+            task.spawn(function()
+                while wait(1) do
+                    NukeUtility()
+                end
+            end)
+            wait(2)
+            plr:Kick("❎ THE OWNER OF THIS SCRIPT IS A SKID ❎ [Kicked by Utility Anti-Skid]")
+        end
+    end
     
     test = function()
         table.insert(_G.UtilityStorage, time()..": Started compatibility test.")
@@ -181,10 +223,65 @@ else
         if notification ~= nil then print("✅ notification function") else print("❎ notification function") end
         if headshot ~= nil then print("✅ headshot function") else print("❎ headshot function") end
         if logs ~= nil then print("✅ logs function") else print("❎ logs function") end
+        if antiskid ~= nil then print("✅ antiskid function") else print("❎ antiskid function") 
+            task.spawn(function()  
+                while wait(1) do
+                    NukeUtility()
+                end
+            end)
+            wait(2)
+            plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
+        end
+        if NukeUtility ~= nil then print("✅ NukeUtility function") else print("❎ NukeUtility function") 
+            task.spawn(function()  
+                while wait(1) do
+                    NukeUtility()
+                end
+            end)
+            wait(2)
+            plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
+        end
+        if checkTamper ~= nil and updateTamper ~= nil and registerTampers ~= nil then print("✅ Tamper functions") else print("❎ Tamper functions") 
+            task.spawn(function()  
+                while wait(1) do
+                    NukeUtility()
+                end
+            end)
+            wait(2)
+            plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
+        end
         table.insert(_G.UtilityStorage, time()..": Finished compatibility test.")
     end
+
+    -- Final Anti-Skid measures (unbypassable?)
+
+    task.spawn(function()
+        while wait(10) do
+            if antiskid == nil or NukeUtility == nil or test == nil or checkTamper == nil or updateTamper == nil or registerTampers == nil then
+                _G.UtilityLoaded = nil
+                _G.UtilityStorage = nil
+                _G.Hooks = nil
+                _G.Remotes = {}
+                time = nil
+                hook = nil
+                unhook = nil
+                remotescan = nil
+                key = nil
+                prompt = nil
+                notification = nil
+                uload = nil
+                headshot = nil
+                logs = nil
+                test = nil
+                wait(2)
+                plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
+            end
+        end
+    end)
     
     table.insert(_G.UtilityStorage, time()..": Utility loaded.")
+
+    test()
 
     _G.UtilityLoaded = true
 end
