@@ -1,4 +1,4 @@
-<b>Disclaimer: Utility is not ready for production, I don't recommend using any code here YET until I'm finished with Utility.</b>
+<b>Utility is Ready for Production! 🎉</b>
 # Warning
 To run <b>Utility</b> you should use <a href="https://celery.zip">Celery</a> to inject/execute this script.
 ![image](https://github.com/user-attachments/assets/5980f896-70d1-4f5d-b93d-7fe775039957)
@@ -81,6 +81,37 @@ to get the logs table
 local Logs = logs(true)
 print(Logs)
 ```
+# Anti-Tamper
+```lua
+--  imagine this is obfuscated
+
+antiskid("sigma","sigma")
+
+local Variables = {
+    ["a"] = 1,
+    ["b"] = 2
+}
+
+registerTampers(Variables)
+
+Variables.a = 3
+updateTamper(Variables.a, 3)
+
+while wait(1) do
+    if checkTamper(Variables) then
+        print("TAMPERED SKID")
+        Variables = nil
+        game.Players.LocalPlayer:Kick("kys skid")
+    end
+end
+
+-- lets tamper with the variable now
+
+Variables.a = 50
+```
+this should make all sense blacklist him or smth if u  have a key system
+# Anti-Skid
+![image](https://github.com/user-attachments/assets/77c66809-d692-4e5f-a64b-b38c5ad31461)
 # Troubleshooting
 check remotes, etc. make sure no errors in console from your functions. else contact _xpluv
 ## other concerns
