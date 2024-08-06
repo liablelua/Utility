@@ -113,9 +113,9 @@ this should make all sense blacklist him or smth if u  have a key system
 # Anti-Skid
 ![image](https://github.com/user-attachments/assets/77c66809-d692-4e5f-a64b-b38c5ad31461)
 # Troubleshooting
-check remotes, etc. make sure no errors in console from your functions. else contact _xpluv
+check remotes, etc. make sure no errors in console from your functions. else contact liablelua
 ## other concerns
-discord @ _xpluv
+discord @ liablelua
 # Can I use Source.
 Yes, just don't distribute it. Or I will personally obfuscate this script and block you from using it.
 # Examples
