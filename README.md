@@ -65,6 +65,31 @@ local HeadShot = headshot(game.Players.LocalPlayer)
 print(HeadShot)
 ```
 great for using for images like your own ui library, etc.
+## speed
+```lua
+speed(game.Players.LocalPlayer, 50)
+```
+walkspeed changer
+## jump
+```lua
+jump(game.Players.LocalPlayer, 100)
+```
+jumppower changer
+## sit
+```lua
+sit(game.Players.LocalPlayer)
+```
+sit player (until they jump)
+## swim
+```lua
+swim(game.Players.LocalPlayer)
+```
+swim player (until they jump)
+## unc
+```lua
+unc
+```
+run unc test
 ### Other not important functions
 time() -- Get Current Time<br>test() -- Like a UNC test, but your checking if your functions are up-to-date, only checks the BIG functions not the "not important" functions.<br>UnloadUtility() -- unload for testing (should only be used in Dev environments)<br>uload(x)() -- loadfile temporary until celery fixes
 ### Logs and allat
