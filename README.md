@@ -1,4 +1,7 @@
 <b>Utility is Ready for Production! 🎉</b>
+# Donate!
+If you want to send an awesome donation to me, my Cashapp tag is $auto445<br>
+All donations appreciated!
 # Warning
 To run <b>Utility</b> you should use <a href="https://celery.zip">Celery</a> to inject/execute this script.
 ![image](https://github.com/user-attachments/assets/5980f896-70d1-4f5d-b93d-7fe775039957)
