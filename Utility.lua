@@ -1,20 +1,25 @@
--- Utility.lua (OffBrandsZickoi - Roblox, _xpluv - Discord)
+-- Utility.lua (OffBrandsZickoi - Roblox, liablelua - Discord)
 
 print([[
-
-    Utility Stable v1.0
-    contact _xpluv if any bugs
+    Utility Stable v2.0
+    contact liablelua if any bugs
     
     Contributors:
     Trax (traxxy123)
     RazAPIx64.dll (razzoni)
-    
+	xyzkade (xyzkade)
+
+    Changelog:
+    Optimizations and more stuff by xyzkade!
+    Character functions! (swim, speed, jump, sit)
+    UNC test! (unc)
 ]])
 
 NukeUtility = function()
     _G.UtilityLoaded = nil
     _G.UtilityStorage = nil
     _G.Hooks = nil
+	table.clear(_G.Remotes) -- free the memory!
     _G.Remotes = {}
     time = nil
     hook = nil
@@ -30,10 +35,10 @@ NukeUtility = function()
 end
 
 time = function()
-    local os = os.date("!*t")
-    local hour = os.hour
-    local minute = os.min
-    local second = os.sec
+    local CurTime = os.date("!*t")
+    local hour = CurTime.hour
+    local minute = CurTime.min
+    local second = CurTime.sec
     return "["..hour..":"..minute..":"..second.."]"
 end
 
@@ -41,7 +46,9 @@ end
 
 --NukeUtility() -- Uncomment if your testing Utility Source
 
-local v = "unstable-c4ca4238a0b923820dcc509a6f75849b"
+local players = game:FindFirstChildOfClass("Players") -- faster + better to be defined
+
+local v = "stable-d1175011b6a984c836e456f81ede0e23"
 local update = string.gsub(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/version_update.txt"), "^%s*(.-)%s*$", "%1")
 
 if update ~= v then
@@ -64,14 +71,12 @@ else
     _G.UtilityStorage = {}
     _G.Hooks = {}
     _G.Remotes = {}
-    plr = game.Players.LocalPlayer
+    plr = players.LocalPlayer
     
     table.insert(_G.UtilityStorage, time()..": Utility started.")
 
     hook = function(rem, func)
-        if _G.Hooks[rem.Name] ~= nil then
-            warn("Theres already a Hook for that! Unhook it to proceed!")
-        else
+        if _G.Hooks[rem.Name] == nil then
             table.insert(_G.UtilityStorage, time()..": Used hook on "..rem.Name..".")
             _G.Hooks[rem.Name] = rem.OnClientEvent:Connect(func)
         end
@@ -81,25 +86,23 @@ else
         if _G.Hooks[rem.Name] then
             table.insert(_G.UtilityStorage, time()..": Removed hook on "..rem.Name..".")
             _G.Hook[rem.Name] = nil
-        else
-            warn("Theres no hook for that Remote.")
         end
     end
 
     remotescan = function(scan, deep)
         table.insert(_G.UtilityStorage, time()..": Used Remote Scan on "..scan.Name..".")
         local Children = scan:GetChildren()
-        for a, b in pairs(Children) do
+
+        for _, b in Children do
             table.insert(_G.UtilityStorage, time()..": Scanned: "..b.Name..".")
             print(b.Name .. " | " .. b.ClassName)
             if deep ~= nil then
                 if typeof(deep) == "boolean" then
-                    for c, d in pairs(b:GetChildren()) do
+                    for _, d in b:GetChildren() do
                         table.insert(_G.UtilityStorage, time()..": Scanned: "..d.Name..".")
                         print(d.Name .. " | " .. d.ClassName)
                     end
                 else
-                    error("Type 'deep' isn't a boolean.")
                     break
                 end
             end
@@ -107,9 +110,8 @@ else
     end
     
     scanall = function(f)
-        -- specifically for my remote spy (when hookfunction get added) but will do with my hook method for local remotes
-        -- DONT USE IN PRODUCTION
-        for i, v in pairs(f:GetChildren()) do
+        table.insert(_G.UtilityStorage, time()..": Scanning, "..f.Name..".")
+        for _, v in f:GetChildren() do
             if v:IsA("Folder") then
                 scanall(v)
             elseif v:IsA("RemoteEvent") then
@@ -119,56 +121,192 @@ else
     end
     
     key = function(keyInput, keyWeb)
+        table.insert(_G.UtilityStorage, time()..": Key system loaded.")
+
         local theKey = string.gsub(game:HttpGet(keyWeb), "^%s*(.-)%s*$", "%1")
+
         if theKey == keyInput then
             return true
         else
-            return false    
+            return false
         end
     end
     
     prompt = function(text, cancel, accept, cfunc, afunc)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/prompt.lua"))()
-        wait(0.2)
-        local Prompt = plr.PlayerGui.prompt
-        local Frame = Prompt.Frame
-        Frame.TextLabel2.Text = text
-        Frame.TextButton.Text = cancel
-        Frame.TextButton2.Text = accept
-        Frame.TextButton.MouseButton1Down:Connect(function()
-            Prompt:Destroy()
+        table.insert(_G.UtilityStorage, time()..": Prompt loaded.")
+
+        local prompt = Instance.new("ScreenGui")
+		local Frame = Instance.new("Frame")
+		local UICorner = Instance.new("UICorner")
+		local Frame_2 = Instance.new("Frame")
+		local TextLabel = Instance.new("TextLabel")
+		local TextLabel2 = Instance.new("TextLabel")
+		local TextButton = Instance.new("TextButton")
+		local UICorner_2 = Instance.new("UICorner")
+		local TextButton2 = Instance.new("TextButton")
+		local UICorner_3 = Instance.new("UICorner")
+		local UISizeConstraint = Instance.new("UISizeConstraint")
+
+		prompt.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+		Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+		Frame.BackgroundColor3 = Color3.new(0.227451, 0.227451, 0.227451)
+		Frame.BackgroundTransparency = 0.5
+		Frame.BorderSizePixel = 0
+		Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+		Frame.Size = UDim2.new(0.300000012, 0, 0.300000012, 0)
+
+		Frame_2.BackgroundColor3 = Color3.new(0.513726, 0.513726, 0.513726)
+		Frame_2.BackgroundTransparency = 0.5
+		Frame_2.BorderSizePixel = 0
+		Frame_2.Position = UDim2.new(0, 0, 0.200000003, 0)
+		Frame_2.Size = UDim2.new(1, 0, 0, 2)
+		Frame_2.ZIndex = 2
+
+		TextLabel.BackgroundTransparency = 1
+		TextLabel.Position = UDim2.new(0, 0, 8.70190391e-08, 0)
+		TextLabel.Size = UDim2.new(0, 350, 0, 35)
+		TextLabel.Font = Enum.Font.BuilderSans
+		TextLabel.Text = "Prompt"
+		TextLabel.TextColor3 = Color3.new(1, 1, 1)
+		TextLabel.TextScaled = true
+		TextLabel.TextSize = 14
+		TextLabel.TextWrapped = true
+
+		TextLabel2.BackgroundTransparency = 1
+		TextLabel2.Position = UDim2.new(8.70190391e-08, 0, 0.24522391, 0)
+		TextLabel2.Size = UDim2.new(0, 350, 0, 74)
+		TextLabel2.Font = Enum.Font.BuilderSans
+		TextLabel2.Text = text
+		TextLabel2.TextColor3 = Color3.new(1, 1, 1)
+		TextLabel2.TextSize = 14
+		TextLabel2.TextWrapped = true
+
+		TextButton.BackgroundColor3 = Color3.new(0.141176, 0.141176, 0.141176)
+		TextButton.BackgroundTransparency = 0.5
+		TextButton.BorderSizePixel = 0
+		TextButton.Position = UDim2.new(0.0251197852, 0, 0.666999996, 0)
+		TextButton.Size = UDim2.new(0.449999988, 0, 0.300000012, 0)
+		TextButton.Font = Enum.Font.BuilderSansExtraBold
+		TextButton.Text = cancel
+		TextButton.TextColor3 = Color3.new(1, 1, 1)
+		TextButton.TextSize = 14
+
+		TextButton2.BackgroundColor3 = Color3.new(0.141176, 0.141176, 0.141176)
+		TextButton2.BackgroundTransparency = 0.5
+		TextButton2.BorderSizePixel = 0
+		TextButton2.Position = UDim2.new(0.520727217, 0, 0.666999996, 0)
+		TextButton2.Size = UDim2.new(0.449999988, 0, 0.300000012, 0)
+		TextButton2.Font = Enum.Font.BuilderSansExtraBold
+		TextButton2.Text = accept
+		TextButton2.TextColor3 = Color3.new(1, 1, 1)
+		TextButton2.TextSize = 14
+
+		UISizeConstraint.MaxSize = Vector2.new(350, 175)
+		UISizeConstraint.MinSize = Vector2.new(350, 175)
+
+		UICorner_2.Parent = TextButton
+		UISizeConstraint.Parent = Frame
+		UICorner_3.Parent = TextButton2
+		TextButton2.Parent = Frame
+		TextButton.Parent = Frame
+		TextLabel2.Parent = Frame
+		TextLabel.Parent = Frame
+		Frame_2.Parent = Frame
+		UICorner.Parent = Frame
+		Frame.Parent = prompt
+		prompt.Parent = gethui()
+		
+        TextButton.MouseButton1Down:Once(function()
+			prompt:Destroy()
             cfunc()
-        end)
-        Frame.TextButton2.MouseButton1Down:Connect(function()
-            Prompt:Destroy()
+		end)
+		TextButton2.MouseButton1Down:Connect(function()
+            prompt:Destroy()
             afunc()
         end)
     end
     
-    notification = function(text,time)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/notification.lua"))()
-        wait(0.2)
-        local Notif = plr.PlayerGui.notif
-        local Frame = Notif.Frame2
-        Frame.TextLabel2.Text = text
-        wait(time)
-        Notif:Destroy()
+    notification = function(text, time)
+        table.insert(_G.UtilityStorage, time()..": Notification loaded.")
+
+		local notif = Instance.new("ScreenGui")
+		local Frame2 = Instance.new("Frame")
+		local UICorner = Instance.new("UICorner")
+		local Frame = Instance.new("Frame")
+		local TextLabel = Instance.new("TextLabel")
+		local TextLabel2 = Instance.new("TextLabel")
+		local UISizeConstraint = Instance.new("UISizeConstraint")
+		
+		notif.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+		Frame2.Parent = notif
+		Frame2.AnchorPoint = Vector2.new(0.5, 0.5)
+		Frame2.BackgroundColor3 = Color3.new(0.227451, 0.227451, 0.227451)
+		Frame2.BackgroundTransparency = 0.5
+		Frame2.BorderSizePixel = 0
+		Frame2.Position = UDim2.new(0.5, 0, 0.150000006, 0)
+		Frame2.Size = UDim2.new(0.300000012, 0, 0.185211286, 0)
+		
+		Frame.BackgroundColor3 = Color3.new(0.513726, 0.513726, 0.513726)
+		Frame.BackgroundTransparency = 0.5
+		Frame.BorderSizePixel = 0
+		Frame.Position = UDim2.new(0, 0, 0.200000003, 0)
+		Frame.Size = UDim2.new(1, 0, 0, 1)
+		
+		TextLabel.BackgroundTransparency = 1
+		TextLabel.BorderSizePixel = 0
+		TextLabel.Position = UDim2.new(8.70190391e-08, 0, 9.78964181e-08, 0)
+		TextLabel.Size = UDim2.new(0, 350, 0, 24)
+		TextLabel.Font = Enum.Font.BuilderSans
+		TextLabel.Text = "Notification"
+		TextLabel.TextColor3 = Color3.new(1, 1, 1)
+		TextLabel.TextScaled = true
+		TextLabel.TextSize = 14
+		TextLabel.TextWrapped = true
+		
+		TextLabel2.BackgroundTransparency = 1
+		TextLabel2.Position = UDim2.new(8.70190391e-08, 0, 0.24522391, 0)
+		TextLabel2.Size = UDim2.new(0, 350, 0, 74)
+		TextLabel2.Font = Enum.Font.BuilderSans
+		TextLabel2.Text = text
+		TextLabel2.TextColor3 = Color3.new(1, 1, 1)
+		TextLabel2.TextSize = 14
+		TextLabel2.TextWrapped = true
+		
+		UISizeConstraint.MaxSize = Vector2.new(350, 116)
+		UISizeConstraint.MinSize = Vector2.new(350, 116)
+		
+		UISizeConstraint.Parent = Frame2
+		TextLabel2.Parent = Frame2
+		TextLabel.Parent = Frame2
+		UICorner.Parent = Frame2
+		Frame.Parent = Frame2
+		notif.Parent = gethui()
+
+        task.delay(time, function()
+			notif:Destroy()
+		end)
     end
 
     registerTampers = function(variables)
-        for i, v in pairs(variables) do
+        table.insert(_G.UtilityStorage, time()..": Registered tamper variables.")
+        for i, v in variables do
             AntiTamper[i] = v
         end
     end
 
     updateTamper = function(var,upd)
+        table.insert(_G.UtilityStorage, time()..": Updated tamper variables.")
         AntiTamper[var] = upd
     end
 
     checkTamper = function(vars)
+        table.insert(_G.UtilityStorage, time()..": Tamper check started.")
         local Tampered = false
-        for i, v in pairs(vars) do
+        for i, v in vars do
             if not (AntiTamper[i] == v and v == vars[i]) then
+                table.insert(_G.UtilityStorage, time()..": The variables were tampered with.")
                 Tampered = true
             end
         end
@@ -176,12 +314,13 @@ else
     end
     
     uload =  function(x)
-        -- custom load file, celery's is broken atm
+        table.insert(_G.UtilityStorage, time()..": uload used for link: "..x..".")
         return loadstring(readfile(x))
     end
     
     headshot = function(id) 
-        local HeadShot = game:GetService("Players"):GetUserThumbnailAsync(id,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420)
+        table.insert(_G.UtilityStorage, time()..": Headshot used for UID: "..tostring(id)..".")
+        local HeadShot = players:GetUserThumbnailAsync(id,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420)
         return HeadShot
     end
 
@@ -197,20 +336,41 @@ else
     end
 
     antiskid = function(scOwner,scValue)
-        warn("⚠️ This Script is Protected by Utility's Anti-Skid ⚠️")
-        if scValue == scOwner then
-            print("✅ Thank's for making a script with Utility! ✅")
-        else
-            warn("❎ SKID ALERT! ❎")
-            warn("❎ NUKING YOUR FUNCTIONS RETARD ❎")
+        table.insert(_G.UtilityStorage, time()..": Anti-Skid Protection Ran.")
+        if scValue ~= scOwner then
             task.spawn(function()
-                while wait(1) do
+                while task.wait() do
                     NukeUtility()
                 end
             end)
-            wait(2)
+            task.wait(2)
             plr:Kick("❎ THE OWNER OF THIS SCRIPT IS A SKID ❎ [Kicked by Utility Anti-Skid]")
         end
+    end
+
+    speed = function(plr,val)
+        plr.Character.Humanoid.WalkSpeed = val
+    end
+
+    jump = function(plr,val)
+        plr.Character.Humanoid.JumpPower = val
+    end
+
+    sit = function(plr)
+        plr.Character.Humanoid.Sit = not plr.Character.Humanoid.Sit
+    end
+
+    swim = function(plr)
+        if plr.Character.Humanoid:GetState() ~= Enum.HumanoidStateType.Swimming then
+            plr.Character.Humanoid:SetStateEnabled("GettingUp", false)
+            plr.Character.Humanoid:ChangeState("Swimming")
+        else
+            plr.Character.Humanoid:SetStateEnabled("GettingUp", true)
+        end
+    end
+
+    unc = function() 
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/unified-naming-convention/NamingStandard/main/UNCCheckEnv.lua"))()
     end
     
     test = function()
@@ -225,29 +385,29 @@ else
         if logs ~= nil then print("✅ logs function") else print("❎ logs function") end
         if antiskid ~= nil then print("✅ antiskid function") else print("❎ antiskid function") 
             task.spawn(function()  
-                while wait(1) do
+                while task.wait(1) do
                     NukeUtility()
                 end
             end)
-            wait(2)
+            task.wait(2)
             plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
         end
         if NukeUtility ~= nil then print("✅ NukeUtility function") else print("❎ NukeUtility function") 
             task.spawn(function()  
-                while wait(1) do
+                while task.wait(1) do
                     NukeUtility()
                 end
             end)
-            wait(2)
+            task.wait(2)
             plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
         end
         if checkTamper ~= nil and updateTamper ~= nil and registerTampers ~= nil then print("✅ Tamper functions") else print("❎ Tamper functions") 
             task.spawn(function()  
-                while wait(1) do
+                while task.wait(1) do
                     NukeUtility()
                 end
             end)
-            wait(2)
+            task.wait(2)
             plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
         end
         table.insert(_G.UtilityStorage, time()..": Finished compatibility test.")
@@ -256,7 +416,7 @@ else
     -- Final Anti-Skid measures (unbypassable?)
 
     task.spawn(function()
-        while wait(10) do
+        while task.wait(10) do
             if antiskid == nil or NukeUtility == nil or test == nil or checkTamper == nil or updateTamper == nil or registerTampers == nil then
                 _G.UtilityLoaded = nil
                 _G.UtilityStorage = nil
@@ -273,7 +433,7 @@ else
                 headshot = nil
                 logs = nil
                 test = nil
-                wait(2)
+                task.wait(2)
                 plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
             end
         end
