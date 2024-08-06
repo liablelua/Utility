@@ -1,4 +1,4 @@
-<b>Utility is Ready for Production! 🎉</b>
+all exploits are patched rn :(
 # Donate!
 If you want to send an awesome donation to me, my Cashapp tag is $auto445<br>
 All donations appreciated!
