@@ -1,7 +1,11 @@
 -- Utility.lua (OffBrandsZickoi - Roblox, liablelua - Discord)
 
+if string.find(identifyexecutor(), "Wave") and getidentity() <= 6 then 
+    return
+end
+
 print([[
-    Utility Stable v2.0
+    Utility Stable v2.1
     contact liablelua if any bugs
     
     Contributors:
@@ -13,12 +17,15 @@ print([[
     Optimizations and more stuff by xyzkade!
     Character functions! (swim, speed, jump, sit)
     UNC test! (unc)
+
+    (v2.1): Blocked Wave + Level 6 and under executors.
 ]])
 
 NukeUtility = function()
     _G.UtilityLoaded = nil
     _G.UtilityStorage = nil
     _G.Hooks = nil
+
 	table.clear(_G.Remotes) -- free the memory!
     _G.Remotes = {}
     time = nil
