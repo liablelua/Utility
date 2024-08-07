@@ -96,8 +96,16 @@ iy()
 ```
 load infinite yield
 ## fromhex
+```lua
+local String = fromhex("7369676D61")
+print(String)
+```
 convert hex to string
 ## tohex
+```lua
+local Hex = tohex("sigma")
+print(Hex)
+```
 convert string to hex
 ### Other not important functions
 time() -- Get Current Time<br>test() -- Like a UNC test, but your checking if your functions are up-to-date, only checks the BIG functions not the "not important" functions.<br>NukeUtility() -- unload for testing (should only be used in Dev environments)<br>uload(x)() -- loadfile temporary until celery fixes<br>getCeleryVersion() -- only works if you executed with celery.
