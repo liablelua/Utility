@@ -1,4 +1,4 @@
-all exploits are patched rn :(
+utility v2.2, :3
 # Donate!
 If you want to send an awesome donation to me, my Cashapp tag is $auto445<br>
 All donations appreciated!
@@ -87,11 +87,20 @@ swim(game.Players.LocalPlayer)
 swim player (until they jump)
 ## unc
 ```lua
-unc
+unc()
 ```
 run unc test
+## iy
+```lua
+iy()
+```
+load infinite yield
+## fromhex
+convert hex to string
+## tohex
+convert string to hex
 ### Other not important functions
-time() -- Get Current Time<br>test() -- Like a UNC test, but your checking if your functions are up-to-date, only checks the BIG functions not the "not important" functions.<br>UnloadUtility() -- unload for testing (should only be used in Dev environments)<br>uload(x)() -- loadfile temporary until celery fixes
+time() -- Get Current Time<br>test() -- Like a UNC test, but your checking if your functions are up-to-date, only checks the BIG functions not the "not important" functions.<br>NukeUtility() -- unload for testing (should only be used in Dev environments)<br>uload(x)() -- loadfile temporary until celery fixes<br>getCeleryVersion() -- only works if you executed with celery.
 ### Logs and allat
 Utility has LOG SUPPORT 🎉<br>
 Logs are automatically enabled, go ahead check them:
