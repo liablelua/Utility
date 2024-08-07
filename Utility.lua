@@ -19,7 +19,31 @@ print([[
     UNC test! (unc)
 
     (v2.1): Blocked Wave + Level 6 and under executors.
+    (v2.2): cloneref patch, infinite yield function. also support for fromhex and tohex!!
 ]])
+
+print("")
+
+if string.find(identifyexecutor(), "Celery") then 
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/getCeleryVersion.lua"))()
+    if getCeleryVersion() == "2.0.9" or version() == "0.636.1.6360627" then
+        warn("⚠️ You are using an Unstable Celery Version (v2.0.9)")
+        print("✅ Applying cloneref patch to environment.")
+        cloneref = function(e) return e end
+    end
+    print("👽 Running Celery v"..getCeleryVersion())
+else
+    warn("⚠️ This script was written for Celery, chances that it might not work on this Executor!")
+end
+
+print("")
+
+print("🛠️ Running Roblox Version: v"..version())
+
+if version() ~= "0.636.1.6360627" then
+    print("")
+    warn("⚠️ Utility may be patched for this Roblox Update, wait for an update on Utility's end.")
+end
 
 NukeUtility = function()
     _G.UtilityLoaded = nil
@@ -55,22 +79,22 @@ end
 
 local players = game:FindFirstChildOfClass("Players") -- faster + better to be defined
 
-local v = "stable-d1175011b6a984c836e456f81ede0e23"
+local v = "stable-0af13f4f06a9ded3bec7108a603fd6a5"
 local update = string.gsub(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/version_update.txt"), "^%s*(.-)%s*$", "%1")
 
 if update ~= v then
-    warn("⚠️ Important changes could of been made to Utility, update ASAP!!")
+    table.insert(_G.UtilityStorage, time()..": Utility has a new update ("..update..") and needs to be downloaded soon.")
 end
 
 if _G.UtilityLoaded ~= nil then
     if typeof(_G.UtilityLoaded) == "boolean" then
         if _G.UtilityLoaded then
-            print("Utility is already loaded.")
+            table.insert(_G.UtilityStorage, time()..": Utility has already been loaded, don't execute again.")
         else
-            print("Utility is loading.")
+            table.insert(_G.UtilityStorage, time()..": Utility is loading, don't execute again.")
         end
     else
-        error("Utility failed to load the first time, perhaps restart Roblox?")
+        table.insert(_G.UtilityStorage, time()..": Utility has failed to load.")
     end
 else
     local AntiTamper = {}
@@ -223,12 +247,12 @@ else
 		UICorner.Parent = Frame
 		Frame.Parent = prompt
 		prompt.Parent = gethui()
-		
+        
         TextButton.MouseButton1Down:Once(function()
-			prompt:Destroy()
+            prompt:Destroy()
             cfunc()
-		end)
-		TextButton2.MouseButton1Down:Connect(function()
+        end)
+        TextButton2.MouseButton1Down:Connect(function()
             prompt:Destroy()
             afunc()
         end)
@@ -292,8 +316,8 @@ else
 		notif.Parent = gethui()
 
         task.delay(time, function()
-			notif:Destroy()
-		end)
+            notif:Destroy()
+        end)
     end
 
     registerTampers = function(variables)
@@ -379,8 +403,21 @@ else
     unc = function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/unified-naming-convention/NamingStandard/main/UNCCheckEnv.lua"))()
     end
+
+    iy = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+    end
+
+    fromhex = function(str)
+        return str:gsub('..', function(cc) return string.char(tonumber(cc, 16)) end)
+    end
+
+    tohex = function(str)
+        return str:gsub('.', function(c) return string.format('%02X', string.byte(c)) end)
+    end
     
     test = function()
+        print("")
         table.insert(_G.UtilityStorage, time()..": Started compatibility test.")
         if hook ~= nil then print("✅ hook function") else print("❎ hook function") end
         if unhook ~= nil then print("✅ unhook function") else print("❎ unhook function") end
@@ -417,6 +454,10 @@ else
             task.wait(2)
             plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
         end
+        if speed ~= nil and jump ~= nil and sit ~= nil and swim ~= nil then print("✅ Humanoid functions") else print("❎ Humanoid functions") end
+        if unc ~= nil then print("✅ unc function") else print("❎ unc function") end
+        if iy ~= nil then print("✅ iy function") else print("❎ iy function") end
+        if fromhex ~= nil and tohex ~= nil then print("✅ Hex functions") else print("❎ Humanoid functions") end
         table.insert(_G.UtilityStorage, time()..": Finished compatibility test.")
     end
 
