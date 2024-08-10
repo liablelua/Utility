@@ -1,58 +1,121 @@
+local startgetTime = os.clock()
 -- Utility.lua (OffBrandsZickoi - Roblox, liablelua - Discord)
+-- Modified / cleaned by sashaa169 / centerepic
 
-if string.find(identifyexecutor(), "Wave") and getidentity() <= 6 then 
-    return
+assert(identifyexecutor, "Executor name not found!")
+
+if string.find(identifyexecutor(), "Wave") or getidentity() <= 6 then
+    return error("Utility has been blocked for Wave and Level 6 and under executors.")
 end
 
-print([[
-    Utility Stable v2.1
-    contact liablelua if any bugs
-    
-    Contributors:
-    Trax (traxxy123)
-    RazAPIx64.dll (razzoni)
-	xyzkade (xyzkade)
+local printEnabled = true
 
-    Changelog:
-    Optimizations and more stuff by xyzkade!
-    Character functions! (swim, speed, jump, sit)
-    UNC test! (unc)
+local supportedRobloxVersion = "0.636.1.6360627"
+local executorName : string = identifyexecutor()
+local Players : Players = game:GetService("Players")
+local LocalPlayer : Player = Players.LocalPlayer
+local CoreGui : CoreGui | PlayerGui = gethui() or game:GetService("CoreGui") or Players.LocalPlayer:WaitForChild("PlayerGui")
+local Character : Model = Players.LocalPlayer.Character or Players.LocalPlayer.CharacterAdded:Wait()
+local Humanoid : Humanoid = Character:WaitForChild("Humanoid")
 
-    (v2.1): Blocked Wave + Level 6 and under executors.
-    (v2.2): cloneref patch, infinite yield function. also support for fromhex and tohex!!
-]])
+LocalPlayer.CharacterAdded:Connect(function(char : Model)
+    Character = char
+    Humanoid = char:WaitForChild("Humanoid")
+end)
 
-print("")
+assert(executorName, "Executor not found!")
 
-if string.find(identifyexecutor(), "Celery") then 
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/getCeleryVersion.lua"))()
-    if getCeleryVersion() == "2.0.9" or version() == "0.636.1.6360627" then
-        warn("⚠️ You are using an Unstable Celery Version (v2.0.9)")
-        print("✅ Applying cloneref patch to environment.")
-        cloneref = function(e) return e end
+local function dbgprint(...)
+    if printEnabled then
+        print(...)
     end
-    print("👽 Running Celery v"..getCeleryVersion())
-else
-    warn("⚠️ This script was written for Celery, chances that it might not work on this Executor!")
 end
 
-print("")
+local function dbgwarn(...)
+    if printEnabled then
+        warn(...)
+    end
+end
 
-print("🛠️ Running Roblox Version: v"..version())
+do -- Print Utility Information
+    local Contributors = {
+        "Trax (traxxy123)",
+        "RazAPIx64.dll (razzoni)",
+        "xyzkade (xyzkade)"
+    }
 
-if version() ~= "0.636.1.6360627" then
-    print("")
+    local Version = "v2.2"
+
+    local changeLog = {
+	["v2.2"] = {
+		"Cleaned up and refactored code."
+		"Increased integrity of utility, should be less error prone now."
+	},
+        ["v2.1"] = {
+            "Optimizations and more stuff by xyzkade!",
+            "Character functions! (swim, speed, jump, sit)",
+            "UNC test! (unc)"
+        }
+    }
+
+    local changeLogString = ""
+
+    for version, changes in next, changeLog do
+
+        changeLogString = changeLogString .. "Changelog for " .. version .. ":\n"
+        for _, change in next, changes do
+            changeLogString = changeLogString .. " - " .. change .. "\n"
+        end
+
+    end
+
+    dbgprint(
+        "Utility Stable " .. Version .. "\n",
+        "Contact liablelua for any bugs or issues\n",
+        "Contributors:\n",
+        table.concat(Contributors, "\n"),
+        "\n" .. changeLogString
+    )
+end
+
+do -- Load executor-specific patches
+
+    local executorPatches = {
+        ["Celery"] = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/getCeleryVersion.lua"))()
+
+            if getCeleryVersion() == "2.0.9" or version() == "0.636.1.6360627" then
+                dbgwarn("⚠️ You are using an Unstable Celery Version (v2.0.9)")
+                dbgprint("✅ Applying cloneref patch to environment.")
+                cloneref = function(e) return e end
+            end
+
+            dbgprint("👽 Running Celery v" .. getCeleryVersion())
+        end
+    }
+
+    if executorPatches[executorName] then
+        executorPatches[executorName]()
+    else
+        dbgwarn("⚠️ No patches available for your executor, script may not work as intended.")
+    end
+
+end
+
+dbgprint("🛠️ Running Roblox Version: v" .. version())
+
+if version() ~= supportedRobloxVersion then
     warn("⚠️ Utility may be patched for this Roblox Update, wait for an update on Utility's end.")
 end
 
 NukeUtility = function()
-    _G.UtilityLoaded = nil
-    _G.UtilityStorage = nil
-    _G.Hooks = nil
+    getgenv().UtilityLoaded = nil
+    getgenv().UtilityStorage = nil
+    getgenv().Hooks = nil
 
-	table.clear(_G.Remotes) -- free the memory!
-    _G.Remotes = {}
-    time = nil
+	table.clear(getgenv().Remotes) -- free the memory!
+    getgenv().Remotes = {}
+    getTime = nil
     hook = nil
     unhook = nil
     remotescan = nil
@@ -65,73 +128,71 @@ NukeUtility = function()
     test = nil
 end
 
-time = function()
-    local CurTime = os.date("!*t")
-    local hour = CurTime.hour
-    local minute = CurTime.min
-    local second = CurTime.sec
+getTime = function()
+    local CurgetTime = os.date("!*t")
+    local hour = CurgetTime.hour
+    local minute = CurgetTime.min
+    local second = CurgetTime.sec
     return "["..hour..":"..minute..":"..second.."]"
 end
 
--- Don't mind "time" it's used for logging certain things and whatnot.
+-- Don't mind "getTime" it's used for logging certain things and whatnot.
+-- NukeUtility() -- Uncomment if your testing Utility Source
 
---NukeUtility() -- Uncomment if your testing Utility Source
-
-local players = game:FindFirstChildOfClass("Players") -- faster + better to be defined
-
-local v = "stable-0af13f4f06a9ded3bec7108a603fd6a5"
+local utilityVersion = "stable-0af13f4f06a9ded3bec7108a603fd6a5"
 local update = string.gsub(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/version_update.txt"), "^%s*(.-)%s*$", "%1")
 
-if update ~= v then
-    table.insert(_G.UtilityStorage, time()..": Utility has a new update ("..update..") and needs to be downloaded soon.")
+if update ~= utilityVersion then
+    table.insert(getgenv().UtilityStorage, getTime() .. ": Utility has a new update (" .. update .. ") and needs to be downloaded soon.")
 end
 
-if _G.UtilityLoaded ~= nil then
-    if typeof(_G.UtilityLoaded) == "boolean" then
-        if _G.UtilityLoaded then
-            table.insert(_G.UtilityStorage, time()..": Utility has already been loaded, don't execute again.")
+if getgenv().UtilityLoaded ~= nil then
+
+    if typeof(getgenv().UtilityLoaded) == "boolean" then
+        if getgenv().UtilityLoaded then
+            table.insert(getgenv().UtilityStorage, getTime()..": Utility has already been loaded, don't execute again.")
         else
-            table.insert(_G.UtilityStorage, time()..": Utility is loading, don't execute again.")
+            table.insert(getgenv().UtilityStorage, getTime()..": Utility is loading, don't execute again.")
         end
     else
-        table.insert(_G.UtilityStorage, time()..": Utility has failed to load.")
+        table.insert(getgenv().UtilityStorage, getTime()..": Utility has failed to load.")
     end
+
 else
     local AntiTamper = {}
-    _G.UtilityLoaded = false
-    _G.UtilityStorage = {}
-    _G.Hooks = {}
-    _G.Remotes = {}
-    plr = players.LocalPlayer
+    getgenv().UtilityLoaded = false
+    getgenv().UtilityStorage = {}
+    getgenv().Hooks = {}
+    getgenv().Remotes = {}
     
-    table.insert(_G.UtilityStorage, time()..": Utility started.")
+    table.insert(getgenv().UtilityStorage, getTime()..": Utility started.")
 
     hook = function(rem, func)
-        if _G.Hooks[rem.Name] == nil then
-            table.insert(_G.UtilityStorage, time()..": Used hook on "..rem.Name..".")
-            _G.Hooks[rem.Name] = rem.OnClientEvent:Connect(func)
+        if getgenv().Hooks[rem.Name] == nil then
+            table.insert(getgenv().UtilityStorage, getTime()..": Used hook on "..rem.Name..".")
+            getgenv().Hooks[rem.Name] = rem.OnClientEvent:Connect(func)
         end
     end
     
     unhook = function(rem, func)
-        if _G.Hooks[rem.Name] then
-            table.insert(_G.UtilityStorage, time()..": Removed hook on "..rem.Name..".")
-            _G.Hook[rem.Name] = nil
+        if getgenv().Hooks[rem.Name] then
+            table.insert(getgenv().UtilityStorage, getTime()..": Removed hook on "..rem.Name..".")
+            getgenv().Hook[rem.Name] = nil
         end
     end
 
-    remotescan = function(scan, deep)
-        table.insert(_G.UtilityStorage, time()..": Used Remote Scan on "..scan.Name..".")
+    remotescan = function(scan : Instance, deep : boolean)
+        table.insert(getgenv().UtilityStorage, getTime()..": Used Remote Scan on "..scan.Name..".")
         local Children = scan:GetChildren()
 
-        for _, b in Children do
-            table.insert(_G.UtilityStorage, time()..": Scanned: "..b.Name..".")
-            print(b.Name .. " | " .. b.ClassName)
+        for _, b : Instance in next, Children do
+            table.insert(getgenv().UtilityStorage, getTime() .. ": Scanned: " ..b.Name.. ".")
+            dbgprint(b.Name .. " | " .. b.ClassName)
             if deep ~= nil then
                 if typeof(deep) == "boolean" then
                     for _, d in b:GetChildren() do
-                        table.insert(_G.UtilityStorage, time()..": Scanned: "..d.Name..".")
-                        print(d.Name .. " | " .. d.ClassName)
+                        table.insert(getgenv().UtilityStorage, getTime()..": Scanned: "..d.Name..".")
+                        dbgprint(d.Name .. " | " .. d.ClassName)
                     end
                 else
                     break
@@ -140,19 +201,19 @@ else
         end
     end
     
-    scanall = function(f)
-        table.insert(_G.UtilityStorage, time()..": Scanning, "..f.Name..".")
-        for _, v in f:GetChildren() do
-            if v:IsA("Folder") then
-                scanall(v)
-            elseif v:IsA("RemoteEvent") then
-                table.insert(_G.Remotes, v)
+    scanall = function(f : Instance)
+        table.insert(getgenv().UtilityStorage, getTime()..": Scanning, "..f.Name..".")
+
+        for _, v : Instance in next, f:GetDescendants() do
+            if v:IsA("RemoteEvent") and v.Parent:IsA("Folder") then
+                table.insert(getgenv().Remotes, v)
             end
         end
+
     end
     
     key = function(keyInput, keyWeb)
-        table.insert(_G.UtilityStorage, time()..": Key system loaded.")
+        table.insert(getgenv().UtilityStorage, getTime()..": Key system loaded.")
 
         local theKey = string.gsub(game:HttpGet(keyWeb), "^%s*(.-)%s*$", "%1")
 
@@ -163,181 +224,192 @@ else
         end
     end
     
-    prompt = function(text, cancel, accept, cfunc, afunc)
-        table.insert(_G.UtilityStorage, time()..": Prompt loaded.")
+    prompt = function(promptText : string, cancelText : string, acceptText : string, cancelFunction : any, acceptFunction : any)
+        table.insert(getgenv().UtilityStorage, getTime()..": Prompt loaded.")
 
-        local prompt = Instance.new("ScreenGui")
-		local Frame = Instance.new("Frame")
-		local UICorner = Instance.new("UICorner")
-		local Frame_2 = Instance.new("Frame")
-		local TextLabel = Instance.new("TextLabel")
-		local TextLabel2 = Instance.new("TextLabel")
-		local TextButton = Instance.new("TextButton")
-		local UICorner_2 = Instance.new("UICorner")
-		local TextButton2 = Instance.new("TextButton")
-		local UICorner_3 = Instance.new("UICorner")
-		local UISizeConstraint = Instance.new("UISizeConstraint")
+        local CancelButton = Instance.new("TextButton")
+        local AcceptButton = Instance.new("TextButton")
 
-		prompt.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        do -- UI Initialization
 
-		Frame.AnchorPoint = Vector2.new(0.5, 0.5)
-		Frame.BackgroundColor3 = Color3.new(0.227451, 0.227451, 0.227451)
-		Frame.BackgroundTransparency = 0.5
-		Frame.BorderSizePixel = 0
-		Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-		Frame.Size = UDim2.new(0.300000012, 0, 0.300000012, 0)
+            local prompt = Instance.new("ScreenGui")
+            local Frame = Instance.new("Frame")
+            local UICorner = Instance.new("UICorner")
+            local Frame_2 = Instance.new("Frame")
+            local TextLabel = Instance.new("TextLabel")
+            local TextLabel2 = Instance.new("TextLabel")
+            
+            local UICorner_2 = Instance.new("UICorner")
 
-		Frame_2.BackgroundColor3 = Color3.new(0.513726, 0.513726, 0.513726)
-		Frame_2.BackgroundTransparency = 0.5
-		Frame_2.BorderSizePixel = 0
-		Frame_2.Position = UDim2.new(0, 0, 0.200000003, 0)
-		Frame_2.Size = UDim2.new(1, 0, 0, 2)
-		Frame_2.ZIndex = 2
+            local UICorner_3 = Instance.new("UICorner")
+            local UISizeConstraint = Instance.new("UISizeConstraint")
 
-		TextLabel.BackgroundTransparency = 1
-		TextLabel.Position = UDim2.new(0, 0, 8.70190391e-08, 0)
-		TextLabel.Size = UDim2.new(0, 350, 0, 35)
-		TextLabel.Font = Enum.Font.BuilderSans
-		TextLabel.Text = "Prompt"
-		TextLabel.TextColor3 = Color3.new(1, 1, 1)
-		TextLabel.TextScaled = true
-		TextLabel.TextSize = 14
-		TextLabel.TextWrapped = true
+            prompt.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-		TextLabel2.BackgroundTransparency = 1
-		TextLabel2.Position = UDim2.new(8.70190391e-08, 0, 0.24522391, 0)
-		TextLabel2.Size = UDim2.new(0, 350, 0, 74)
-		TextLabel2.Font = Enum.Font.BuilderSans
-		TextLabel2.Text = text
-		TextLabel2.TextColor3 = Color3.new(1, 1, 1)
-		TextLabel2.TextSize = 14
-		TextLabel2.TextWrapped = true
+            Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+            Frame.BackgroundColor3 = Color3.new(0.227451, 0.227451, 0.227451)
+            Frame.BackgroundTransparency = 0.5
+            Frame.BorderSizePixel = 0
+            Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+            Frame.Size = UDim2.new(0.300000012, 0, 0.300000012, 0)
 
-		TextButton.BackgroundColor3 = Color3.new(0.141176, 0.141176, 0.141176)
-		TextButton.BackgroundTransparency = 0.5
-		TextButton.BorderSizePixel = 0
-		TextButton.Position = UDim2.new(0.0251197852, 0, 0.666999996, 0)
-		TextButton.Size = UDim2.new(0.449999988, 0, 0.300000012, 0)
-		TextButton.Font = Enum.Font.BuilderSansExtraBold
-		TextButton.Text = cancel
-		TextButton.TextColor3 = Color3.new(1, 1, 1)
-		TextButton.TextSize = 14
+            Frame_2.BackgroundColor3 = Color3.new(0.513726, 0.513726, 0.513726)
+            Frame_2.BackgroundTransparency = 0.5
+            Frame_2.BorderSizePixel = 0
+            Frame_2.Position = UDim2.new(0, 0, 0.200000003, 0)
+            Frame_2.Size = UDim2.new(1, 0, 0, 2)
+            Frame_2.ZIndex = 2
 
-		TextButton2.BackgroundColor3 = Color3.new(0.141176, 0.141176, 0.141176)
-		TextButton2.BackgroundTransparency = 0.5
-		TextButton2.BorderSizePixel = 0
-		TextButton2.Position = UDim2.new(0.520727217, 0, 0.666999996, 0)
-		TextButton2.Size = UDim2.new(0.449999988, 0, 0.300000012, 0)
-		TextButton2.Font = Enum.Font.BuilderSansExtraBold
-		TextButton2.Text = accept
-		TextButton2.TextColor3 = Color3.new(1, 1, 1)
-		TextButton2.TextSize = 14
+            TextLabel.BackgroundTransparency = 1
+            TextLabel.Position = UDim2.new(0, 0, 8.70190391e-08, 0)
+            TextLabel.Size = UDim2.new(0, 350, 0, 35)
+            TextLabel.Font = Enum.Font.BuilderSans
+            TextLabel.Text = "Prompt"
+            TextLabel.TextColor3 = Color3.new(1, 1, 1)
+            TextLabel.TextScaled = true
+            TextLabel.TextSize = 14
+            TextLabel.TextWrapped = true
 
-		UISizeConstraint.MaxSize = Vector2.new(350, 175)
-		UISizeConstraint.MinSize = Vector2.new(350, 175)
+            TextLabel2.BackgroundTransparency = 1
+            TextLabel2.Position = UDim2.new(8.70190391e-08, 0, 0.24522391, 0)
+            TextLabel2.Size = UDim2.new(0, 350, 0, 74)
+            TextLabel2.Font = Enum.Font.BuilderSans
+            TextLabel2.Text = promptText
+            TextLabel2.TextColor3 = Color3.new(1, 1, 1)
+            TextLabel2.TextSize = 14
+            TextLabel2.TextWrapped = true
 
-		UICorner_2.Parent = TextButton
-		UISizeConstraint.Parent = Frame
-		UICorner_3.Parent = TextButton2
-		TextButton2.Parent = Frame
-		TextButton.Parent = Frame
-		TextLabel2.Parent = Frame
-		TextLabel.Parent = Frame
-		Frame_2.Parent = Frame
-		UICorner.Parent = Frame
-		Frame.Parent = prompt
-		prompt.Parent = gethui()
+            CancelButton.BackgroundColor3 = Color3.new(0.141176, 0.141176, 0.141176)
+            CancelButton.BackgroundTransparency = 0.5
+            CancelButton.BorderSizePixel = 0
+            CancelButton.Position = UDim2.new(0.0251197852, 0, 0.666999996, 0)
+            CancelButton.Size = UDim2.new(0.449999988, 0, 0.300000012, 0)
+            CancelButton.Font = Enum.Font.BuilderSansExtraBold
+            CancelButton.Text = cancelText
+            CancelButton.TextColor3 = Color3.new(1, 1, 1)
+            CancelButton.TextSize = 14
+
+            AcceptButton.BackgroundColor3 = Color3.new(0.141176, 0.141176, 0.141176)
+            AcceptButton.BackgroundTransparency = 0.5
+            AcceptButton.BorderSizePixel = 0
+            AcceptButton.Position = UDim2.new(0.520727217, 0, 0.666999996, 0)
+            AcceptButton.Size = UDim2.new(0.449999988, 0, 0.300000012, 0)
+            AcceptButton.Font = Enum.Font.BuilderSansExtraBold
+            AcceptButton.Text = acceptText
+            AcceptButton.TextColor3 = Color3.new(1, 1, 1)
+            AcceptButton.TextSize = 14
+
+            UISizeConstraint.MaxSize = Vector2.new(350, 175)
+            UISizeConstraint.MinSize = Vector2.new(350, 175)
+
+            UICorner_2.Parent = AcceptButton
+            UISizeConstraint.Parent = Frame
+            UICorner_3.Parent = AcceptButton
+            AcceptButton.Parent = Frame
+            AcceptButton.Parent = Frame
+            TextLabel2.Parent = Frame
+            TextLabel.Parent = Frame
+            Frame_2.Parent = Frame
+            UICorner.Parent = Frame
+            Frame.Parent = prompt
+            prompt.Parent = CoreGui
+
+        end
         
-        TextButton.MouseButton1Down:Once(function()
+        CancelButton.MouseButton1Down:Once(function()
             prompt:Destroy()
-            cfunc()
+            cancelFunction()
         end)
-        TextButton2.MouseButton1Down:Connect(function()
+        
+        AcceptButton.MouseButton1Down:Connect(function()
             prompt:Destroy()
-            afunc()
+            acceptFunction()
         end)
     end
     
-    notification = function(text, time)
-        table.insert(_G.UtilityStorage, time()..": Notification loaded.")
+    notification = function(text : string, notificationTime : number)
+        table.insert(getgenv().UtilityStorage, getTime() .. ": Notification loaded.")
 
-		local notif = Instance.new("ScreenGui")
-		local Frame2 = Instance.new("Frame")
-		local UICorner = Instance.new("UICorner")
-		local Frame = Instance.new("Frame")
-		local TextLabel = Instance.new("TextLabel")
-		local TextLabel2 = Instance.new("TextLabel")
-		local UISizeConstraint = Instance.new("UISizeConstraint")
+		local Notification = Instance.new("ScreenGui")
 		
-		notif.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        do -- UI Initialization
+            local Frame2 = Instance.new("Frame")
+            local UICorner = Instance.new("UICorner")
+            local Frame = Instance.new("Frame")
+            local TextLabel = Instance.new("TextLabel")
+            local TextLabel2 = Instance.new("TextLabel")
+            local UISizeConstraint = Instance.new("UISizeConstraint")
+            
+            Notification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-		Frame2.Parent = notif
-		Frame2.AnchorPoint = Vector2.new(0.5, 0.5)
-		Frame2.BackgroundColor3 = Color3.new(0.227451, 0.227451, 0.227451)
-		Frame2.BackgroundTransparency = 0.5
-		Frame2.BorderSizePixel = 0
-		Frame2.Position = UDim2.new(0.5, 0, 0.150000006, 0)
-		Frame2.Size = UDim2.new(0.300000012, 0, 0.185211286, 0)
-		
-		Frame.BackgroundColor3 = Color3.new(0.513726, 0.513726, 0.513726)
-		Frame.BackgroundTransparency = 0.5
-		Frame.BorderSizePixel = 0
-		Frame.Position = UDim2.new(0, 0, 0.200000003, 0)
-		Frame.Size = UDim2.new(1, 0, 0, 1)
-		
-		TextLabel.BackgroundTransparency = 1
-		TextLabel.BorderSizePixel = 0
-		TextLabel.Position = UDim2.new(8.70190391e-08, 0, 9.78964181e-08, 0)
-		TextLabel.Size = UDim2.new(0, 350, 0, 24)
-		TextLabel.Font = Enum.Font.BuilderSans
-		TextLabel.Text = "Notification"
-		TextLabel.TextColor3 = Color3.new(1, 1, 1)
-		TextLabel.TextScaled = true
-		TextLabel.TextSize = 14
-		TextLabel.TextWrapped = true
-		
-		TextLabel2.BackgroundTransparency = 1
-		TextLabel2.Position = UDim2.new(8.70190391e-08, 0, 0.24522391, 0)
-		TextLabel2.Size = UDim2.new(0, 350, 0, 74)
-		TextLabel2.Font = Enum.Font.BuilderSans
-		TextLabel2.Text = text
-		TextLabel2.TextColor3 = Color3.new(1, 1, 1)
-		TextLabel2.TextSize = 14
-		TextLabel2.TextWrapped = true
-		
-		UISizeConstraint.MaxSize = Vector2.new(350, 116)
-		UISizeConstraint.MinSize = Vector2.new(350, 116)
-		
-		UISizeConstraint.Parent = Frame2
-		TextLabel2.Parent = Frame2
-		TextLabel.Parent = Frame2
-		UICorner.Parent = Frame2
-		Frame.Parent = Frame2
-		notif.Parent = gethui()
+            Frame2.Parent = Notification
+            Frame2.AnchorPoint = Vector2.new(0.5, 0.5)
+            Frame2.BackgroundColor3 = Color3.new(0.227451, 0.227451, 0.227451)
+            Frame2.BackgroundTransparency = 0.5
+            Frame2.BorderSizePixel = 0
+            Frame2.Position = UDim2.new(0.5, 0, 0.150000006, 0)
+            Frame2.Size = UDim2.new(0.300000012, 0, 0.185211286, 0)
+            
+            Frame.BackgroundColor3 = Color3.new(0.513726, 0.513726, 0.513726)
+            Frame.BackgroundTransparency = 0.5
+            Frame.BorderSizePixel = 0
+            Frame.Position = UDim2.new(0, 0, 0.200000003, 0)
+            Frame.Size = UDim2.new(1, 0, 0, 1)
+            
+            TextLabel.BackgroundTransparency = 1
+            TextLabel.BorderSizePixel = 0
+            TextLabel.Position = UDim2.new(8.70190391e-08, 0, 9.78964181e-08, 0)
+            TextLabel.Size = UDim2.new(0, 350, 0, 24)
+            TextLabel.Font = Enum.Font.BuilderSans
+            TextLabel.Text = "Notification"
+            TextLabel.TextColor3 = Color3.new(1, 1, 1)
+            TextLabel.TextScaled = true
+            TextLabel.TextSize = 14
+            TextLabel.TextWrapped = true
+            
+            TextLabel2.BackgroundTransparency = 1
+            TextLabel2.Position = UDim2.new(8.70190391e-08, 0, 0.24522391, 0)
+            TextLabel2.Size = UDim2.new(0, 350, 0, 74)
+            TextLabel2.Font = Enum.Font.BuilderSans
+            TextLabel2.Text = text
+            TextLabel2.TextColor3 = Color3.new(1, 1, 1)
+            TextLabel2.TextSize = 14
+            TextLabel2.TextWrapped = true
+            
+            UISizeConstraint.MaxSize = Vector2.new(350, 116)
+            UISizeConstraint.MinSize = Vector2.new(350, 116)
+            
+            UISizeConstraint.Parent = Frame2
+            TextLabel2.Parent = Frame2
+            TextLabel.Parent = Frame2
+            UICorner.Parent = Frame2
+            Frame.Parent = Frame2
+            Notification.Parent = CoreGui
+        end
 
-        task.delay(time, function()
-            notif:Destroy()
+        task.delay(notificationTime, function()
+            Notification:Destroy()
         end)
     end
 
     registerTampers = function(variables)
-        table.insert(_G.UtilityStorage, time()..": Registered tamper variables.")
+        table.insert(getgenv().UtilityStorage, getTime()..": Registered tamper variables.")
         for i, v in variables do
             AntiTamper[i] = v
         end
     end
 
     updateTamper = function(var,upd)
-        table.insert(_G.UtilityStorage, time()..": Updated tamper variables.")
+        table.insert(getgenv().UtilityStorage, getTime()..": Updated tamper variables.")
         AntiTamper[var] = upd
     end
 
     checkTamper = function(vars)
-        table.insert(_G.UtilityStorage, time()..": Tamper check started.")
+        table.insert(getgenv().UtilityStorage, getTime()..": Tamper check started.")
         local Tampered = false
         for i, v in vars do
             if not (AntiTamper[i] == v and v == vars[i]) then
-                table.insert(_G.UtilityStorage, time()..": The variables were tampered with.")
+                table.insert(getgenv().UtilityStorage, getTime()..": The variables were tampered with.")
                 Tampered = true
             end
         end
@@ -345,120 +417,161 @@ else
     end
     
     uload =  function(x)
-        table.insert(_G.UtilityStorage, time()..": uload used for link: "..x..".")
+        table.insert(getgenv().UtilityStorage, getTime()..": uload used for link: "..x..".")
         return loadstring(readfile(x))
     end
     
     headshot = function(id) 
-        table.insert(_G.UtilityStorage, time()..": Headshot used for UID: "..tostring(id)..".")
-        local HeadShot = players:GetUserThumbnailAsync(id,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420)
+        table.insert(getgenv().UtilityStorage, getTime()..": Headshot used for UID: "..tostring(id)..".")
+        local HeadShot = Players:GetUserThumbnailAsync(id, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
         return HeadShot
     end
 
     logs = function(ret)
+
         if ret ~= nil then
             if ret then
-                return _G.UtilityStorage
+                return getgenv().UtilityStorage
             end
         end
-        for i = 1, #_G.UtilityStorage do
-            print(_G.UtilityStorage[i])
+
+        for i,v in next, getgenv().UtilityStorage do
+            dbgprint(v)
         end
+
     end
 
     antiskid = function(scOwner,scValue)
-        table.insert(_G.UtilityStorage, time()..": Anti-Skid Protection Ran.")
+        table.insert(getgenv().UtilityStorage, getTime()..": Anti-Skid Protection Ran.")
+
         if scValue ~= scOwner then
+
             task.spawn(function()
                 while task.wait() do
                     NukeUtility()
                 end
             end)
+
             task.wait(2)
-            plr:Kick("❎ THE OWNER OF THIS SCRIPT IS A SKID ❎ [Kicked by Utility Anti-Skid]")
+
+            LocalPlayer:Kick("❎ THE OWNER OF THIS SCRIPT IS A SKID ❎ [Kicked by Utility Anti-Skid]")
+
         end
     end
 
-    speed = function(plr,val)
-        plr.Character.Humanoid.WalkSpeed = val
-    end
+    speed = function(val : number)
 
-    jump = function(plr,val)
-        plr.Character.Humanoid.JumpPower = val
-    end
-
-    sit = function(plr)
-        plr.Character.Humanoid.Sit = not plr.Character.Humanoid.Sit
-    end
-
-    swim = function(plr)
-        if plr.Character.Humanoid:GetState() ~= Enum.HumanoidStateType.Swimming then
-            plr.Character.Humanoid:SetStateEnabled("GettingUp", false)
-            plr.Character.Humanoid:ChangeState("Swimming")
-        else
-            plr.Character.Humanoid:SetStateEnabled("GettingUp", true)
+        if Humanoid then
+            Humanoid.WalkSpeed = val
         end
+
     end
 
-    unc = function() 
+    jump = function(val : number)
+        
+        if Humanoid then
+            Humanoid.JumpPower = val
+        end
+
+    end
+
+    sit = function()
+
+        if Humanoid then
+            Humanoid.Sit = not Humanoid.Sit
+        end
+        
+    end
+
+    swim = function()
+
+        if Humanoid then
+            if Humanoid:GetState() ~= Enum.HumanoidStateType.Swimming then
+                Humanoid:SetStateEnabled("GettingUp", false)
+                Humanoid:ChangeState("Swimming")
+            else
+                Humanoid:SetStateEnabled("GettingUp", true)
+            end
+        end
+
+    end
+
+    unc = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/unified-naming-convention/NamingStandard/main/UNCCheckEnv.lua"))()
     end
 
     iy = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+        task.spawn(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+        end)
     end
 
-    fromhex = function(str)
+    fromhex = function(str : string)
         return str:gsub('..', function(cc) return string.char(tonumber(cc, 16)) end)
     end
 
-    tohex = function(str)
+    tohex = function(str : string)
         return str:gsub('.', function(c) return string.format('%02X', string.byte(c)) end)
     end
     
-    test = function()
-        print("")
-        table.insert(_G.UtilityStorage, time()..": Started compatibility test.")
-        if hook ~= nil then print("✅ hook function") else print("❎ hook function") end
-        if unhook ~= nil then print("✅ unhook function") else print("❎ unhook function") end
-        if remotescan ~= nil then print("✅ remotescan function") else print("❎ remotescan function") end
-        if key ~= nil then print("✅ key function") else print("❎ key function") end
-        if prompt ~= nil then print("✅ prompt function") else print("❎ prompt function") end
-        if notification ~= nil then print("✅ notification function") else print("❎ notification function") end
-        if headshot ~= nil then print("✅ headshot function") else print("❎ headshot function") end
-        if logs ~= nil then print("✅ logs function") else print("❎ logs function") end
-        if antiskid ~= nil then print("✅ antiskid function") else print("❎ antiskid function") 
+    runtests = function()
+        dbgprint("")
+        table.insert(getgenv().UtilityStorage, getTime()..": Started compatibility test.")
+
+        local testfuncs = {
+            {hook, "hookfunction"},
+            {unhook, "unhookfunction"},
+            {remotescan, "remotescanfunction"},
+            {key, "keyfunction"},
+            {prompt, "promptfunction"},
+            {notification, "notificationfunction"},
+            {headshot, "headshotfunction"},
+            {logs, "logsfunction"},
+            {speed, "speedfunction"},
+            {unc, "uncfunction"},
+            {iy, "iyfunction"},
+            {fromhex, "fromhexfunction"},
+        }
+
+        for _, v in next, testfuncs do
+            if v[1] == nil then
+                dbgprint("❎ "..v[2].." not found.")
+            else
+                dbgprint("✅ "..v[2].." found.")
+            end
+        end
+
+        if antiskid ~= nil then dbgprint("✅ antiskid function") else dbgprint("❎ antiskid function") 
             task.spawn(function()  
                 while task.wait(1) do
                     NukeUtility()
                 end
             end)
             task.wait(2)
-            plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
+            LocalPlayer:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
         end
-        if NukeUtility ~= nil then print("✅ NukeUtility function") else print("❎ NukeUtility function") 
+
+        if NukeUtility ~= nil then dbgprint("✅ NukeUtility function") else dbgprint("❎ NukeUtility function") 
             task.spawn(function()  
                 while task.wait(1) do
                     NukeUtility()
                 end
             end)
             task.wait(2)
-            plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
+            LocalPlayer:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
         end
-        if checkTamper ~= nil and updateTamper ~= nil and registerTampers ~= nil then print("✅ Tamper functions") else print("❎ Tamper functions") 
+
+        if checkTamper ~= nil and updateTamper ~= nil and registerTampers ~= nil then dbgprint("✅ Tamper functions") else dbgprint("❎ Tamper functions") 
             task.spawn(function()  
                 while task.wait(1) do
                     NukeUtility()
                 end
             end)
             task.wait(2)
-            plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
+            LocalPlayer:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
         end
-        if speed ~= nil and jump ~= nil and sit ~= nil and swim ~= nil then print("✅ Humanoid functions") else print("❎ Humanoid functions") end
-        if unc ~= nil then print("✅ unc function") else print("❎ unc function") end
-        if iy ~= nil then print("✅ iy function") else print("❎ iy function") end
-        if fromhex ~= nil and tohex ~= nil then print("✅ Hex functions") else print("❎ Humanoid functions") end
-        table.insert(_G.UtilityStorage, time()..": Finished compatibility test.")
+
+        table.insert(getgenv().UtilityStorage, getTime() .. ": Finished compatibility test.")
     end
 
     -- Final Anti-Skid measures (unbypassable?)
@@ -466,11 +579,11 @@ else
     task.spawn(function()
         while task.wait(10) do
             if antiskid == nil or NukeUtility == nil or test == nil or checkTamper == nil or updateTamper == nil or registerTampers == nil then
-                _G.UtilityLoaded = nil
-                _G.UtilityStorage = nil
-                _G.Hooks = nil
-                _G.Remotes = {}
-                time = nil
+                getgenv().UtilityLoaded = nil
+                getgenv().UtilityStorage = nil
+                getgenv().Hooks = nil
+                getgenv().Remotes = {}
+                getTime = nil
                 hook = nil
                 unhook = nil
                 remotescan = nil
@@ -482,14 +595,14 @@ else
                 logs = nil
                 test = nil
                 task.wait(2)
-                plr:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
+                LocalPlayer:Kick("⚠️ THIS SKID THOUGHT HE COULD BYPASS ANTISKID? ⚠️")
             end
         end
     end)
     
-    table.insert(_G.UtilityStorage, time()..": Utility loaded.")
+    table.insert(getgenv().UtilityStorage, getTime()..": Utility loaded.")
 
-    test()
+    runtests()
 
-    _G.UtilityLoaded = true
+    getgenv().UtilityLoaded = true
 end
