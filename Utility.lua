@@ -153,7 +153,7 @@ end
 -- Don't mind "getTime" it's used for logging certain things and whatnot.
 -- NukeUtility() -- Uncomment if your testing Utility Source
 
-local utilityVersion = "stable-0af13f4f06a9ded3bec7108a603fd6a5"
+local utilityVersion = "stable-dc772e43300b07754f4739b746938a15"
 local update = string.gsub(game:HttpGet("https://raw.githubusercontent.com/liablelua/Utility/main/version_update.txt"), "^%s*(.-)%s*$", "%1")
 
 if update ~= utilityVersion then
@@ -188,7 +188,7 @@ else
         end
     end
     
-    unhook = function(rem, func)
+    unhook = function(rem)
         if getgenv().Hooks[rem.Name] then
             table.insert(getgenv().UtilityStorage, getTime()..": Removed hook on "..rem.Name..".")
             getgenv().Hook[rem.Name] = nil
