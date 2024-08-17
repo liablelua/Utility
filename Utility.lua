@@ -1,6 +1,4 @@
 local startgetTime = os.clock()
--- Utility.lua (OffBrandsZickoi - Roblox, liablelua - Discord)
--- Modified / cleaned by sashaa169 / centerepic
 
 assert(identifyexecutor, "Executor name not found!")
 
@@ -26,32 +24,32 @@ end)
 assert(executorName, "Executor not found!")
 
 local function dbgprint(...)
-    if printEnabled then
-        print(...)
-    end
+    rconsoleprint("(Utility) [PRINT]: ".. ...)
 end
 
 local function dbgwarn(...)
-    if printEnabled then
-        warn(...)
-    end
+    rconsoleprint("(Utility) [WARNING]: ".. ...)
 end
 
 do -- Print Utility Information
     local Contributors = {
         "Trax (traxxy123)",
         "RazAPIx64.dll (razzoni)",
-        "xyzkade (xyzkade)"
+        "xyzkade (xyzkade)",
+        "Sashaa169 (centerepic)"
     }
 
-    local Version = "v2.2"
+    local Version = "v3.0.0"
 
     local changeLog = {
-	["v2.2"] = {
-		"Cleaned up and refactored code."
-		"Increased integrity of utility, should be less error prone now."
-	},
-        ["v2.1"] = {
+        ["v3.0.0"] = {
+
+        },
+	    ["v2.2.0"] = {
+		    "Cleaned up and refactored code.",
+		    "Increased integrity of utility, should be less error prone now."
+	    },
+        ["v2.1.1"] = {
             "Optimizations and more stuff by xyzkade!",
             "Character functions! (swim, speed, jump, sit)",
             "UNC test! (unc)"
@@ -102,6 +100,23 @@ do -- Load executor-specific patches
 
 end
 
+-- Synapse Save Instance boogaloo
+
+local Params = {
+    RepoURL = "https://raw.githubusercontent.com/luau/SynSaveInstance/main/",
+    SSI = "saveinstance",
+}
+
+local synsaveinstance = loadstring(game:HttpGet(Params.RepoURL .. Params.SSI .. ".luau", true), Params.SSI)()
+
+do -- Save Instance Patch
+    if saveinstance == nil then
+        saveinstance = function(Options : Table)
+            synsaveinstance(Options)
+        end
+    end
+end
+
 dbgprint("🛠️ Running Roblox Version: v" .. version())
 
 if version() ~= supportedRobloxVersion then
@@ -112,8 +127,7 @@ NukeUtility = function()
     getgenv().UtilityLoaded = nil
     getgenv().UtilityStorage = nil
     getgenv().Hooks = nil
-
-	table.clear(getgenv().Remotes) -- free the memory!
+    table.clear(getgenv().Remotes)
     getgenv().Remotes = {}
     getTime = nil
     hook = nil
@@ -519,18 +533,18 @@ else
         table.insert(getgenv().UtilityStorage, getTime()..": Started compatibility test.")
 
         local testfuncs = {
-            {hook, "hookfunction"},
-            {unhook, "unhookfunction"},
-            {remotescan, "remotescanfunction"},
-            {key, "keyfunction"},
-            {prompt, "promptfunction"},
-            {notification, "notificationfunction"},
-            {headshot, "headshotfunction"},
-            {logs, "logsfunction"},
-            {speed, "speedfunction"},
-            {unc, "uncfunction"},
-            {iy, "iyfunction"},
-            {fromhex, "fromhexfunction"},
+            {hook, "Local Hooking"},
+            {unhook, "Local Unhooking"},
+            {remotescan, "Remote Scanner"},
+            {key, "Key System"},
+            {prompt, "Prompt Library"},
+            {notification, "Notification Library"},
+            {headshot, "Player Headshots"},
+            {logs, "Utility Logger"},
+            {speed, "Humanoid Properties"},
+            {unc, "UNC Tests"},
+            {iy, "Infinite Yield"},
+            {fromhex, "Hex Conversions"}
         }
 
         for _, v in next, testfuncs do
