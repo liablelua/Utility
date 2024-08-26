@@ -42,9 +42,13 @@ do -- Print Utility Information
     local Version = "v3.0.0"
 
     local changeLog = {
-        ["v3.0.0"] = {
-
-        },
+	    ["v3.0.1"] = {
+		"Minor update to hooks."
+	    },
+            ["v3.0.0"] = {
+	        "Code cleanup",
+		"A lot of shit, look up the YT release announcement."
+            },
 	    ["v2.2.0"] = {
 		    "Cleaned up and refactored code.",
 		    "Increased integrity of utility, should be less error prone now."
@@ -184,14 +188,22 @@ else
     hook = function(rem, func)
         if getgenv().Hooks[rem.Name] == nil then
             table.insert(getgenv().UtilityStorage, getTime()..": Used hook on "..rem.Name..".")
-            getgenv().Hooks[rem.Name] = rem.OnClientEvent:Connect(func)
+            local success, connection = pcall(function()
+                return rem.OnClientEvent:Connect(func)
+            end)
+            if success then
+                getgenv().Hooks[rem.Name] = connection
+            else
+                warn("Failed to hook "..rem.Name..": "..connection)
+            end
         end
     end
-    
+
     unhook = function(rem)
         if getgenv().Hooks[rem.Name] then
             table.insert(getgenv().UtilityStorage, getTime()..": Removed hook on "..rem.Name..".")
-            getgenv().Hook[rem.Name] = nil
+            getgenv().Hooks[rem.Name]:Disconnect()
+            getgenv().Hooks[rem.Name] = nil
         end
     end
 
